@@ -59,7 +59,7 @@ export async function syncUserWithSupabase() {
     }
     
     // Create a Supabase client
-    const supabase = createServerSupabaseClient();
+    const supabase = await createServerSupabaseClient();
     
     // Check if the user exists in Supabase
     const { data: existingUser, error: fetchError } = await supabase
