@@ -8,7 +8,7 @@ export default function Navigation() {
   const pathname = usePathname();
 
   const isActive = (path: string) => {
-    return pathname === path;
+    return pathname === path || pathname?.startsWith(path + '/');
   };
 
   return (
@@ -44,14 +44,14 @@ export default function Navigation() {
                   Dashboard
                 </Link>
                 <Link
-                  href="/links"
+                  href="/dashboard/links"
                   className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                    isActive('/links')
+                    isActive('/dashboard/links')
                       ? 'border-blue-500 text-gray-900'
                       : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                   }`}
                 >
-                  Links
+                  Manage Links
                 </Link>
                 <Link
                   href="/collections"
