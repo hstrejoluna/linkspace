@@ -43,12 +43,17 @@ export const useLinksStore = create<LinksState>()(
             throw new Error('User not authenticated');
           }
           
-          const response = await LinkRepository.findByUserId(userId);
-          if (!response) {
+          const { data, error } = await LinkRepository.findByUserId(userId);
+          
+          if (error) {
+            throw error;
+          }
+          
+          if (!data) {
             throw new Error('Failed to fetch links');
           }
           
-          set({ links: response, isLoading: false });
+          set({ links: data as Link[], isLoading: false });
         } catch (error) {
           set({ 
             error: error instanceof Error ? error.message : 'An error occurred',
@@ -60,14 +65,19 @@ export const useLinksStore = create<LinksState>()(
       fetchLinkById: async (id: string) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await LinkRepository.findById(id);
-          if (!response) {
+          const { data, error } = await LinkRepository.findById(id);
+          
+          if (error) {
+            throw error;
+          }
+          
+          if (!data) {
             throw new Error('Link not found');
           }
           
           set({ 
-            selectedLink: response,
-            selectedLinkId: response.id,
+            selectedLink: data as Link,
+            selectedLinkId: id,
             isLoading: false 
           });
         } catch (error) {
@@ -82,17 +92,24 @@ export const useLinksStore = create<LinksState>()(
       createLink: async (data: CreateLinkInput) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await LinkRepository.create(data);
-          if (!response) {
+          const { data: createdLink, error } = await LinkRepository.create(data);
+          
+          if (error) {
+            throw error;
+          }
+          
+          if (!createdLink) {
             throw new Error('Failed to create link');
           }
           
+          const newLink = createdLink as Link;
+          
           set((state) => ({ 
-            links: [response, ...state.links],
+            links: [newLink, ...state.links],
             isLoading: false 
           }));
           
-          return response;
+          return newLink;
         } catch (error) {
           set({ 
             error: error instanceof Error ? error.message : 'An error occurred',
@@ -105,22 +122,29 @@ export const useLinksStore = create<LinksState>()(
       updateLink: async (id: string, data: Partial<Link>) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await LinkRepository.update(id, data);
-          if (!response) {
+          const { data: updatedLink, error } = await LinkRepository.update(id, data);
+          
+          if (error) {
+            throw error;
+          }
+          
+          if (!updatedLink) {
             throw new Error('Failed to update link');
           }
           
+          const updatedLinkData = updatedLink as Link;
+          
           set((state) => ({ 
             links: state.links.map(link => 
-              link.id === id ? { ...link, ...response } : link
+              link.id === id ? { ...link, ...updatedLinkData } : link
             ),
             selectedLink: state.selectedLink?.id === id
-              ? { ...state.selectedLink, ...response }
+              ? { ...state.selectedLink, ...updatedLinkData }
               : state.selectedLink,
             isLoading: false 
           }));
           
-          return response;
+          return updatedLinkData;
         } catch (error) {
           set({ 
             error: error instanceof Error ? error.message : 'An error occurred',
@@ -133,7 +157,11 @@ export const useLinksStore = create<LinksState>()(
       deleteLink: async (id: string) => {
         set({ isLoading: true, error: null });
         try {
-          await LinkRepository.delete(id);
+          const { error } = await LinkRepository.delete(id);
+          
+          if (error) {
+            throw error;
+          }
           
           set((state) => ({ 
             links: state.links.filter(link => link.id !== id),
