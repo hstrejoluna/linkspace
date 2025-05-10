@@ -12,7 +12,7 @@ const LinkSchema = z.object({
   isPublic: z.boolean().default(true)
 })
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     const user = await currentUser()
 
@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const user = await currentUser()
 

@@ -13,8 +13,7 @@ const LinkUpdateSchema = z.object({
 })
 
 export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request
 ) {
   try {
     const user = await currentUser()
@@ -43,8 +42,11 @@ export async function PATCH(
       )
     }
 
-    const { id } = params
-    const data = await req.json()
+    // Extract the ID from the URL
+    const url = new URL(request.url)
+    const id = url.pathname.split('/').pop()
+    
+    const data = await request.json()
     
     const validationResult = LinkUpdateSchema.safeParse(data)
     
@@ -85,8 +87,7 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request
 ) {
   try {
     const user = await currentUser()
@@ -115,7 +116,9 @@ export async function DELETE(
       )
     }
     
-    const { id } = params
+    // Extract the ID from the URL
+    const url = new URL(request.url)
+    const id = url.pathname.split('/').pop()
     
     // Find the link to ensure it belongs to the user
     const link = await prisma.link.findUnique({
