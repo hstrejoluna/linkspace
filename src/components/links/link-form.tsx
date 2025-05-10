@@ -145,7 +145,7 @@ export function LinkForm({ linkId, onSuccess }: LinkFormProps) {
     const currentTags = form.getValues('tags') || [];
     form.setValue(
       'tags',
-      currentTags.filter(tag => tag !== tagToRemove)
+      currentTags.filter((tag: string) => tag !== tagToRemove)
     );
   };
   
@@ -170,7 +170,7 @@ export function LinkForm({ linkId, onSuccess }: LinkFormProps) {
         <FormField
           control={form.control}
           name="url"
-          render={({ field }) => (
+          render={({ field }: { field: any }) => (
             <FormItem>
               <FormLabel>URL</FormLabel>
               <FormControl>
@@ -191,7 +191,7 @@ export function LinkForm({ linkId, onSuccess }: LinkFormProps) {
         <FormField
           control={form.control}
           name="title"
-          render={({ field }) => (
+          render={({ field }: { field: any }) => (
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
@@ -208,7 +208,7 @@ export function LinkForm({ linkId, onSuccess }: LinkFormProps) {
         <FormField
           control={form.control}
           name="description"
-          render={({ field }) => (
+          render={({ field }: { field: any }) => (
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
@@ -229,7 +229,7 @@ export function LinkForm({ linkId, onSuccess }: LinkFormProps) {
         <FormField
           control={form.control}
           name="isPublic"
-          render={({ field }) => (
+          render={({ field }: { field: any }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
               <div className="space-y-0.5">
                 <FormLabel className="text-base">Public Link</FormLabel>
@@ -250,7 +250,7 @@ export function LinkForm({ linkId, onSuccess }: LinkFormProps) {
         <FormField
           control={form.control}
           name="tags"
-          render={({ field }) => (
+          render={({ field }: { field: any }) => (
             <FormItem>
               <FormLabel>Tags</FormLabel>
               <div className="flex">
@@ -258,7 +258,7 @@ export function LinkForm({ linkId, onSuccess }: LinkFormProps) {
                   <Input 
                     placeholder="Add tags..."
                     value={tagInput}
-                    onChange={(e) => setTagInput(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTagInput(e.target.value)}
                     onKeyDown={handleTagKeyDown}
                   />
                 </FormControl>
@@ -279,7 +279,7 @@ export function LinkForm({ linkId, onSuccess }: LinkFormProps) {
               
               {field.value && field.value.length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-2">
-                  {field.value.map((tag) => (
+                  {field.value.map((tag: string) => (
                     <Badge key={tag} variant="secondary" className="text-sm">
                       {tag}
                       <button
