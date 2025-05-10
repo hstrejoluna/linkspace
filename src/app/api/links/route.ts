@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { currentUser } from '@clerk/nextjs/server'
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
+import { syncUser } from '@/lib/clerk/user-sync'
 
 const LinkSchema = z.object({
   url: z.string().url(),
@@ -60,6 +61,17 @@ export async function POST(req: NextRequest) {
       console.error('Prisma client is not initialized')
       return NextResponse.json(
         { error: 'Database connection error' },
+        { status: 500 }
+      )
+    }
+
+    // Sync the user to ensure they exist in the database
+    const { data: syncedUser, error: syncError } = await syncUser()
+    
+    if (syncError || !syncedUser) {
+      console.error('Error syncing user:', syncError)
+      return NextResponse.json(
+        { error: 'Failed to sync user' },
         { status: 500 }
       )
     }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { currentUser } from '@clerk/nextjs/server'
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
+import { syncUser } from '@/lib/clerk/user-sync'
 
 const LinkUpdateSchema = z.object({
   url: z.string().url().optional(),
@@ -31,6 +32,17 @@ export async function PATCH(
       )
     }
 
+    // Sync the user to ensure they exist in the database
+    const { data: syncedUser, error: syncError } = await syncUser()
+    
+    if (syncError || !syncedUser) {
+      console.error('Error syncing user:', syncError)
+      return NextResponse.json(
+        { error: 'Failed to sync user' },
+        { status: 500 }
+      )
+    }
+
     const { id } = params
     const data = await req.json()
     
@@ -43,10 +55,9 @@ export async function PATCH(
       )
     }
     
-    // Verify link ownership
+    // Find the link to ensure it belongs to the user
     const link = await prisma.link.findUnique({
-      where: { id },
-      select: { userId: true }
+      where: { id }
     })
     
     if (!link) {
@@ -54,9 +65,10 @@ export async function PATCH(
     }
     
     if (link.userId !== user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
     
+    // Update the link
     const updatedLink = await prisma.link.update({
       where: { id },
       data: validationResult.data
@@ -92,12 +104,22 @@ export async function DELETE(
       )
     }
 
+    // Sync the user to ensure they exist in the database
+    const { data: syncedUser, error: syncError } = await syncUser()
+    
+    if (syncError || !syncedUser) {
+      console.error('Error syncing user:', syncError)
+      return NextResponse.json(
+        { error: 'Failed to sync user' },
+        { status: 500 }
+      )
+    }
+    
     const { id } = params
     
-    // Verify link ownership
+    // Find the link to ensure it belongs to the user
     const link = await prisma.link.findUnique({
-      where: { id },
-      select: { userId: true }
+      where: { id }
     })
     
     if (!link) {
@@ -105,9 +127,10 @@ export async function DELETE(
     }
     
     if (link.userId !== user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
     
+    // Delete the link
     await prisma.link.delete({
       where: { id }
     })
