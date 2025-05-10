@@ -3,7 +3,7 @@
 import { useUser } from '@clerk/nextjs';
 import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
-import { Link as LinkType } from '@prisma/client';
+import type { Link } from '@/generated/prisma/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -23,7 +23,7 @@ export default function SecuredDataDemo({
   description = "This component demonstrates Row Level Security. You can only see your own links and public links shared by others."
 }: SecuredDataDemoProps) {
   const { user, isSignedIn, isLoaded } = useUser();
-  const [links, setLinks] = useState<LinkType[]>([]);
+  const [links, setLinks] = useState<Link[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -144,7 +144,7 @@ export default function SecuredDataDemo({
 
 // Helper components
 
-function LinkCard({ link, currentUserId }: { link: LinkType, currentUserId: string }) {
+function LinkCard({ link, currentUserId }: { link: Link, currentUserId: string }) {
   const isOwnedByUser = link.userId === currentUserId;
   
   return (
