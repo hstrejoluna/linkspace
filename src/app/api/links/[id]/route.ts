@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { currentUser } from '@clerk/nextjs/server'
-import { PrismaClient } from '@prisma/client'
 import { z } from 'zod'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 const LinkUpdateSchema = z.object({
   url: z.string().url().optional(),
@@ -22,6 +20,15 @@ export async function PATCH(
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Verify Prisma is initialized
+    if (!prisma) {
+      console.error('Prisma client is not initialized')
+      return NextResponse.json(
+        { error: 'Database connection error' },
+        { status: 500 }
+      )
     }
 
     const { id } = params
@@ -74,6 +81,15 @@ export async function DELETE(
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Verify Prisma is initialized
+    if (!prisma) {
+      console.error('Prisma client is not initialized')
+      return NextResponse.json(
+        { error: 'Database connection error' },
+        { status: 500 }
+      )
     }
 
     const { id } = params

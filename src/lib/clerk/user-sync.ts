@@ -1,5 +1,5 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
-import { prisma } from '../models/db';
+import { prisma } from '@/lib/prisma';
 import { createServerSupabaseClient } from './clerk-supabase';
 
 /**
@@ -13,6 +13,11 @@ export async function syncUser() {
     
     if (!user) {
       return { data: null, error: new Error('No authenticated user') };
+    }
+    
+    // Verify Prisma is initialized
+    if (!prisma) {
+      return { data: null, error: new Error('Database client not initialized') };
     }
     
     // Check if the user exists in our database
