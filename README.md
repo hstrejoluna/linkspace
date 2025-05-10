@@ -5,7 +5,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 First, set up your environment variables:
 
 ```bash
-# Create a .env file with your database and Supabase credentials
+# Create a .env file with your database, Clerk, and Supabase credentials
 cp .env.example .env
 # Edit the .env file with your actual credentials
 ```
@@ -53,19 +53,28 @@ The Prisma client is generated in `src/generated/prisma/` and is excluded from G
 
 ## Authentication
 
-Authentication is handled by Supabase. The setup includes:
+Authentication is handled by [Clerk](https://clerk.com/), with integration to [Supabase](https://supabase.com/) for database access. The setup includes:
 
-- Server-side authentication with middleware
-- Client-side authentication components
-- Automatic user synchronization between Supabase and the database
+1. **Clerk Authentication**: Provides user management, authentication, and session handling
+2. **Supabase Integration**: Stores and manages user data with Row-Level Security
+
+### Setting up Clerk with Supabase
+
+1. Create a Clerk account and set up a new project
+2. Create a Supabase account and set up a new project
+3. In the Clerk Dashboard, navigate to JWT Templates and create a new Supabase template
+4. Copy your Supabase JWT Secret from the Supabase Dashboard (Project Settings > API > JWT Settings)
+5. Paste the JWT Secret into the Clerk JWT Template
+6. Configure your environment variables in the .env file
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+To learn more about the technologies used in this project, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 - [Prisma Documentation](https://www.prisma.io/docs) - learn about Prisma ORM.
+- [Clerk Documentation](https://clerk.com/docs) - learn about Clerk authentication.
 - [Supabase Documentation](https://supabase.com/docs) - learn about Supabase.
 
 ## Deploy on Vercel
