@@ -22,6 +22,16 @@ DIRECT_URL="postgresql://user:password@localhost:5432/linkspace?schema=public"
 npx prisma migrate dev --name init
 ```
 
+## Generated Files
+
+The Prisma client is generated in `src/generated/prisma/` directory. These files should **not** be committed to Git, as they are:
+
+1. Automatically generated and can be recreated with `npx prisma generate`
+2. Contain large binary files specific to the current platform
+3. May differ between development environments
+
+We've added this directory to `.gitignore` to prevent these files from being committed.
+
 ## Models
 
 The application includes the following models:
