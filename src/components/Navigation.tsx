@@ -3,21 +3,23 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { LinkIcon, LayoutDashboardIcon, FolderIcon, HomeIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function Navigation() {
   const pathname = usePathname();
 
   const isActive = (path: string) => {
-    return pathname === path;
+    return pathname === path || pathname?.startsWith(`${path}/`);
   };
 
   return (
-    <nav className="bg-white shadow-sm">
+    <nav className="border-b bg-background">
       <div className="container mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Link href="/" className="text-xl font-bold text-blue-600">
+              <Link href="/" className="text-xl font-bold text-primary">
                 LinkSpace
               </Link>
             </div>
@@ -26,10 +28,11 @@ export default function Navigation() {
                 href="/"
                 className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
                   isActive('/')
-                    ? 'border-blue-500 text-gray-900'
-                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                    ? 'border-primary text-foreground'
+                    : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'
                 }`}
               >
+                <HomeIcon className="h-4 w-4 mr-2" />
                 Home
               </Link>
               <SignedIn>
@@ -37,30 +40,33 @@ export default function Navigation() {
                   href="/dashboard"
                   className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
                     isActive('/dashboard')
-                      ? 'border-blue-500 text-gray-900'
-                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                      ? 'border-primary text-foreground'
+                      : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'
                   }`}
                 >
+                  <LayoutDashboardIcon className="h-4 w-4 mr-2" />
                   Dashboard
                 </Link>
                 <Link
-                  href="/links"
+                  href="/dashboard/links"
                   className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                    isActive('/links')
-                      ? 'border-blue-500 text-gray-900'
-                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                    isActive('/dashboard/links')
+                      ? 'border-primary text-foreground'
+                      : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'
                   }`}
                 >
+                  <LinkIcon className="h-4 w-4 mr-2" />
                   Links
                 </Link>
                 <Link
                   href="/collections"
                   className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
                     isActive('/collections')
-                      ? 'border-blue-500 text-gray-900'
-                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                      ? 'border-primary text-foreground'
+                      : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'
                   }`}
                 >
+                  <FolderIcon className="h-4 w-4 mr-2" />
                   Collections
                 </Link>
               </SignedIn>
@@ -71,17 +77,15 @@ export default function Navigation() {
               <UserButton afterSignOutUrl="/" />
             </SignedIn>
             <SignedOut>
-              <Link
-                href="/sign-in"
-                className="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Sign In
+              <Link href="/sign-in">
+                <Button variant="ghost" className="mr-2">
+                  Sign In
+                </Button>
               </Link>
-              <Link
-                href="/sign-up"
-                className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md text-sm font-medium ml-2"
-              >
-                Sign Up
+              <Link href="/sign-up">
+                <Button>
+                  Sign Up
+                </Button>
               </Link>
             </SignedOut>
           </div>
