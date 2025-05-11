@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from '@clerk/nextjs';
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { useState, useEffect } from 'react';
 
 /**
@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react';
  */
 export function useSupabase() {
   const { session } = useSession();
-  const [supabaseClient, setSupabaseClient] = useState<ReturnType<typeof createClient> | null>(null);
+  const [supabaseClient, setSupabaseClient] = useState<SupabaseClient | null>(null);
 
   useEffect(() => {
     if (!session) return;

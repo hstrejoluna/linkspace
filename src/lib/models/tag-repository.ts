@@ -1,9 +1,23 @@
-import { prisma, safeDbOperation } from "./db";
-import { Tag } from "./index";
+import { prisma } from "@/lib/prisma";
 import { createTagSchema } from "./schema";
 import { z } from "zod";
 
 export type CreateTagInput = z.infer<typeof createTagSchema>;
+
+/**
+ * Helper function to safely execute database operations
+ */
+async function safeDbOperation<T>(
+  operation: () => Promise<T>
+): Promise<{ data: T | null; error: Error | null }> {
+  try {
+    const data = await operation();
+    return { data, error: null };
+  } catch (error) {
+    console.error("Database error:", error);
+    return { data: null, error: error instanceof Error ? error : new Error("An unknown database error occurred") };
+  }
+}
 
 /**
  * Repository for Tag model operations

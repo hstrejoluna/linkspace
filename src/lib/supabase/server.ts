@@ -13,10 +13,11 @@ export const createClient = async () => {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return cookieStore.getAll();
+        async getAll() {
+          return (await cookieStore).getAll();
         },
-        setAll(cookiesToSet) {
+        async setAll(cookiesToSet) {
+          const cookieStore = await cookies();
           cookiesToSet.forEach(({ name, value, options }) => {
             cookieStore.set(name, value, options as CookieOptions);
           });

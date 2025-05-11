@@ -1,5 +1,5 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
-import { prisma } from '../models/db';
+import { prisma } from '@/lib/prisma';
 import { createServerSupabaseClient } from './clerk-supabase';
 
 /**
@@ -15,29 +15,23 @@ export async function syncUser() {
       return { data: null, error: new Error('No authenticated user') };
     }
     
-    // Check if the user exists in our database
-    const existingUser = await prisma.user.findUnique({
-      where: { id: user.id },
-    });
-    
-    // If the user exists, update their information
-    if (existingUser) {
-      const updatedUser = await prisma.user.update({
-        where: { id: user.id },
-        data: {
-          email: user.emailAddresses[0].emailAddress,
-          name: `${user.firstName} ${user.lastName}`.trim(),
-          image: user.imageUrl,
-          updatedAt: new Date(),
-        },
-      });
-      
-      return { data: updatedUser, error: null };
+    // Verify Prisma is initialized
+    if (!prisma) {
+      return { data: null, error: new Error('Database client not initialized') };
     }
     
-    // If the user doesn't exist, create a new user
-    const newUser = await prisma.user.create({
-      data: {
+    // Use upsert to either create a new user or update an existing one
+    const syncedUser = await prisma.user.upsert({
+      where: { 
+        id: user.id 
+      },
+      update: {
+        email: user.emailAddresses[0].emailAddress,
+        name: `${user.firstName} ${user.lastName}`.trim(),
+        image: user.imageUrl,
+        updatedAt: new Date(),
+      },
+      create: {
         id: user.id,
         email: user.emailAddresses[0].emailAddress,
         name: `${user.firstName} ${user.lastName}`.trim(),
@@ -45,7 +39,7 @@ export async function syncUser() {
       },
     });
     
-    return { data: newUser, error: null };
+    return { data: syncedUser, error: null };
   } catch (error) {
     console.error('Error syncing user:', error);
     return { data: null, error: error instanceof Error ? error : new Error('Unknown error') };
@@ -65,7 +59,7 @@ export async function syncUserWithSupabase() {
     }
     
     // Create a Supabase client
-    const supabase = createServerSupabaseClient();
+    const supabase = await createServerSupabaseClient();
     
     // Check if the user exists in Supabase
     const { data: existingUser, error: fetchError } = await supabase

@@ -1,6 +1,8 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { PlusCircle, LinkIcon, FolderIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -12,7 +14,15 @@ export default async function DashboardPage() {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <Button asChild>
+          <Link href="/dashboard/links/new" className="flex items-center">
+            <PlusCircle className="mr-2" />
+            Create New Link
+          </Link>
+        </Button>
+      </div>
       
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
         <h2 className="text-xl font-semibold mb-4">Welcome, {user.firstName}!</h2>
@@ -21,18 +31,18 @@ export default async function DashboardPage() {
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-          <Link 
-            href="/links" 
-            className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded text-center"
-          >
-            Manage Links
-          </Link>
-          <Link 
-            href="/collections" 
-            className="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded text-center"
-          >
-            Manage Collections
-          </Link>
+          <Button asChild>
+            <Link href="/dashboard/links" className="flex items-center justify-center">
+              <LinkIcon className="mr-2" />
+              Manage Links
+            </Link>
+          </Button>
+          <Button asChild variant="secondary">
+            <Link href="/dashboard/collections" className="flex items-center justify-center">
+              <FolderIcon className="mr-2" />
+              Manage Collections
+            </Link>
+          </Button>
         </div>
       </div>
       
