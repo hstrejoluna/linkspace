@@ -1,5 +1,4 @@
 import { PrismaClient } from '../generated/prisma'
-import { withAccelerate } from '@prisma/extension-accelerate'
 
 // PrismaClient is attached to the `global` object in development to prevent
 // exhausting your database connection limit.
@@ -9,6 +8,6 @@ export const prisma =
   globalForPrisma.prisma ||
   new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-  }).$extends(withAccelerate())
+  })
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
