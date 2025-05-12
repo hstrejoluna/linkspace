@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   output: 'standalone',
+  // This is needed for Prisma to work properly in Vercel
+  outputFileTracing: true,
   experimental: {
     // This ensures Prisma's query engine is properly handled
     serverComponentsExternalPackages: ['@prisma/client', 'prisma'],

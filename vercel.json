@@ -1,10 +1,10 @@
 {
-  "buildCommand": "prisma generate && next build && node scripts/copy-prisma-engines.js",
+  "buildCommand": "npx prisma generate && next build && node scripts/copy-prisma-engines.js",
   "framework": "nextjs",
   "regions": ["iad1"],
   "build": {
     "env": {
-      "PRISMA_CLI_BINARY_TARGETS": "native,rhel-openssl-3.0.x,debian-openssl-3.0.x,linux-musl-openssl-3.0.x"
+      "PRISMA_CLI_BINARY_TARGETS": "rhel-openssl-3.0.x,debian-openssl-3.0.x,linux-musl-openssl-3.0.x"
     }
   }
 } 
