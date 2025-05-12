@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { SignedIn, SignedOut } from '@clerk/nextjs';
-import SecuredDataDemo from '@/components/supabase/secured-data-demo';
 
 export default function HomePage() {
   return (

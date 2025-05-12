@@ -2,45 +2,39 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Define protected routes that require authentication
-const isProtectedRoute = createRouteMatcher([
-  '/dashboard(.*)',
-  '/profile(.*)',
-  '/collections(.*)',
-  '/links(.*)'
-]);
-
-// Define API routes that should sync user data
-const isApiRoute = createRouteMatcher([
-  '/api/((?!webhooks).*)' // Match all API routes except webhooks
-]);
-
 // Define public routes that don't require authentication
 const isPublicRoute = createRouteMatcher([
   '/',
   '/sign-in(.*)',
   '/sign-up(.*)',
-  '/api/webhooks(.*)'
+  '/_not-found(.*)'
 ]);
 
+// This function can be marked `async` if using `await` inside
 export default clerkMiddleware(async (auth, req) => {
-  // If the route is protected, ensure the user is authenticated
-  if (isProtectedRoute(req)) {
-    await auth.protect();
+  // If it's a public route, allow access without authentication
+  if (isPublicRoute(req)) {
+    return NextResponse.next();
   }
-
+  
+  // For all other routes, require authentication
+  const authObject = await auth();
+  if (!authObject.userId) {
+    const signInUrl = new URL('/sign-in', req.url);
+    return NextResponse.redirect(signInUrl);
+  }
+  
   return NextResponse.next();
 });
 
+// Stop Middleware running on static files and public folder
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    // Exclude files with a "." followed by an extension, which are typically static files
+    '/((?!.+\\.[\\w]+$|_next).*)',
+    // Include root route
+    '/',
+    // Include API routes
+    '/(api|trpc)(.*)',
   ],
 }; 
