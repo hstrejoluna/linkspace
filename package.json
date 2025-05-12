@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && next build && node scripts/copy-prisma-engines.js",
-    "start": "next start",
+    "build": "prisma generate && next build && node scripts/copy-prisma-engines.js && node scripts/check-prisma-binary.js",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build && node scripts/copy-prisma-engines.js && node scripts/check-prisma-binary.js",
+    "start": "node scripts/check-prisma-binary.js && next start",
     "lint": "next lint",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",

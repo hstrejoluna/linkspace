@@ -4,7 +4,23 @@
   "regions": ["iad1"],
   "build": {
     "env": {
-      "PRISMA_CLI_BINARY_TARGETS": "rhel-openssl-3.0.x,debian-openssl-3.0.x,linux-musl-openssl-3.0.x"
+      "PRISMA_CLI_BINARY_TARGETS": "rhel-openssl-3.0.x,debian-openssl-3.0.x,linux-musl-openssl-3.0.x",
+      "PRISMA_CLIENT_ENGINE_TYPE": "binary",
+      "PRISMA_CLI_QUERY_ENGINE_TYPE": "binary"
     }
-  }
+  },
+  "functions": {
+    "api/**/*": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1",
+      "continue": true
+    }
+  ],
+  "outputDirectory": ".next"
 } 

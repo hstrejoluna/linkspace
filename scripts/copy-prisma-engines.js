@@ -18,7 +18,12 @@ async function copyPrismaEngines() {
       path.join(process.cwd(), '.vercel/output/functions/_api/src/generated/prisma'),
       path.join(process.cwd(), '.next/server/chunks/src/generated/prisma'),
       path.join(process.cwd(), '.next/server/app/api/src/generated/prisma'),
-      path.join(process.cwd(), '.next/standalone/src/generated/prisma')
+      path.join(process.cwd(), '.next/standalone/src/generated/prisma'),
+      path.join(process.cwd(), '.next/server/src/generated/prisma'),
+      path.join(process.cwd(), '.next/server'),
+      path.join(process.cwd(), 'src/generated/prisma'),
+      path.join(process.cwd(), '.prisma/client'),
+      path.join(process.cwd(), '/tmp/prisma-engines')
     ];
     
     console.log('Source directory:', sourceDir);
