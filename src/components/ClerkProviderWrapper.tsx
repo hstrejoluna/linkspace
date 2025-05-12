@@ -12,8 +12,15 @@ export default function ClerkProviderWrapper({
   children,
   publishableKey
 }: ClerkProviderWrapperProps) {
+  // Use environment variable directly if not provided as prop
+  const clerkPubKey = publishableKey || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+  
+  if (!clerkPubKey) {
+    console.error('Missing Clerk publishable key');
+  }
+  
   return (
-    <ClerkProvider publishableKey={publishableKey}>
+    <ClerkProvider publishableKey={clerkPubKey}>
       {children}
     </ClerkProvider>
   );

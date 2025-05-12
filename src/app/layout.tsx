@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ClerkProviderWrapper publishableKey="pk_test_bmF0aXZlLW9yaW9sZS0yMC5jbGVyay5hY2NvdW50cy5kZXYk">
+        <ClerkProviderWrapper publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
           <Navigation />
           <main>{children}</main>
         </ClerkProviderWrapper>

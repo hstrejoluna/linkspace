@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "npx prisma generate && next build && node scripts/copy-prisma-engines.js",
+    "build": "prisma generate && next build && node scripts/copy-prisma-engines.js",
     "start": "next start",
     "lint": "next lint",
     "prisma:generate": "prisma generate",
