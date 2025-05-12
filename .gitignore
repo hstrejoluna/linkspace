@@ -46,3 +46,11 @@ next-env.d.ts
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+# Prisma
+.prisma/
+!prisma/schema.prisma
+**/generated/prisma/libquery_engine-*
+**/generated/prisma/*engine*
+**/generated/prisma/schema.prisma
+**/.vercel/output/functions/**/*.blob
