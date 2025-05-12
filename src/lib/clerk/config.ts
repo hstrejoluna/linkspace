@@ -10,7 +10,9 @@ export const clerkConfig = {
     '/sign-up(.*)',
     '/api/webhooks(.*)',
     '/terms',
-    '/privacy'
+    '/privacy',
+    '/not-found',
+    '/_not-found'
   ],
   
   // Paths that require authentication
