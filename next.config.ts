@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import path from "path";
 
 const nextConfig: NextConfig = {
   eslint: {
@@ -7,34 +6,28 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   output: 'standalone',
-  // This is needed for Prisma to work properly in Vercel
-  outputFileTracing: true,
-  // Optimize output trace to exclude unnecessary files
-  outputFileTracingExcludes: {
-    '*': [
-      'node_modules/@swc/core-linux-x64-gnu',
-      'node_modules/@swc/core-linux-x64-musl',
-      'node_modules/esbuild-linux-64/bin',
-    ],
-  },
-  // Include Prisma binaries in the trace
-  outputFileTracingIncludes: {
-    '*': ['node_modules/.prisma/**/*', 'src/generated/prisma/**/*'],
-  },
-  // This ensures Prisma's query engine is properly handled
-  serverExternalPackages: ['@prisma/client', 'prisma'],
+  // External packages that should not be bundled by Next.js
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb',
     },
+    // Workaround for Prisma compatibility with Vercel
+    serverComponentsExternalPackages: ['@prisma/client', 'prisma'],
   },
   webpack: (config, { isServer }) => {
     if (isServer) {
       // Add the Prisma folder to webpack's file watching
-      config.watchOptions = {
-        ...config.watchOptions,
-        ignored: [...(config.watchOptions?.ignored || []), '!**/node_modules/.prisma/**'],
-      };
+      config.watchOptions = config.watchOptions || {};
+      
+      // Ensure ignored is an array before spreading
+      const ignoredPaths = Array.isArray(config.watchOptions.ignored) 
+        ? config.watchOptions.ignored 
+        : [];
+      
+      config.watchOptions.ignored = [
+        ...ignoredPaths,
+        '!**/node_modules/.prisma/**'
+      ];
     }
     return config;
   },
