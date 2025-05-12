@@ -8,9 +8,9 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   // This is needed for Prisma to work properly in Vercel
   outputFileTracing: true,
+  // This ensures Prisma's query engine is properly handled
+  serverExternalPackages: ['@prisma/client', 'prisma'],
   experimental: {
-    // This ensures Prisma's query engine is properly handled
-    serverComponentsExternalPackages: ['@prisma/client', 'prisma'],
     serverActions: {
       bodySizeLimit: '2mb',
     },
